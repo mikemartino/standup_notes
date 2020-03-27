@@ -19,6 +19,9 @@ def main(arguments: Namespace):
     tomorrow = datetime.strftime(datetime.now() + timedelta(days=1), '%Y%m%d')
     tomorrow_note = os.path.join(STANDUP_NOTES, tomorrow + EXT)
 
+    if not os.path.exists(STANDUP_NOTES):
+        os.mkdir(STANDUP_NOTES)
+
     if arguments.list:
         for note in os.listdir(STANDUP_NOTES):
             print(os.path.join(STANDUP_NOTES, note))
