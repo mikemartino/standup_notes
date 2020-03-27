@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 
-from argparse import ArgumentParser, Namespace
 import os
+import sys
+from argparse import ArgumentParser, Namespace
 from datetime import datetime, timedelta
-import pyperclip
+
 import editor
+import pyperclip
 
 EXT = '.standup-notes.txt'
 STANDUP_NOTES = os.path.join(os.environ.get("HOME"), 'Desktop/standup-notes')
@@ -77,5 +79,10 @@ parser.add_argument('--copy-tomorrow', help='Copy tomorrow\'s stand-up notes to 
 parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
 parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
 args = parser.parse_args()
+
+# sys.argv includes a list of elements starting with the program name
+if len(sys.argv) < 2:
+    parser.print_usage()
+    sys.exit(1)
 
 main(args)
