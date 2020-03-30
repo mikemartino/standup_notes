@@ -1,3 +1,7 @@
 .idea
 Pipfile.lock
 .venv
+build
+dist
+*.spec
+standup_notes/__pycache__

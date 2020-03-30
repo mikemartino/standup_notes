@@ -10,8 +10,7 @@ import pyperclip
 
 EXT = '.standup-notes.txt'
 STANDUP_NOTES = os.path.join(os.environ.get("HOME"), 'Desktop/standup-notes')
-STANDUP_TEMPLATE = os.path.join(os.path.dirname(__file__), 'standup.template')
-
+STANDUP_TEMPLATE = 'standup.template'
 
 def main(arguments: Namespace):
     today = date.strftime(date.today(), '%Y%m%d')

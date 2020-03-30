@@ -1,8 +1,0 @@
-#!/bin/bash
-
-dir="$(cd $(dirname $0) && pwd)"
-notes_path=$dir/bin
-
-echo "export PATH=$notes_path:$PATH" >> ~/.bashrc
-echo "$notes_path has been added to your PATH. To use the 'standup_notes' command run:"
-echo "source ~/.bashrc"
