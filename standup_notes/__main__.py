@@ -75,9 +75,9 @@ def read_note(note):
 
 def next_weekday(day: date) -> date:
     tomorrow = day + timedelta(days=1)
-    week_num = tomorrow.weekday()
+    day_num = tomorrow.weekday()
     # Monday - Friday (0-4), Saturday(5), Sunday(6)
-    if week_num < 5:  # Weekday
+    if day_num < 5:  # Weekday
         return tomorrow
     else:  # Weekend
         return next_weekday(tomorrow)
