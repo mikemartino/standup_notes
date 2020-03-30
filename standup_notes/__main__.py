@@ -3,7 +3,7 @@
 import os
 import sys
 from argparse import ArgumentParser, Namespace
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 
 import editor
 import pyperclip
@@ -14,9 +14,9 @@ STANDUP_TEMPLATE = os.path.join(os.path.dirname(__file__), 'standup.template')
 
 
 def main(arguments: Namespace):
-    today = datetime.strftime(datetime.now(), '%Y%m%d')
+    today = date.strftime(date.today(), '%Y%m%d')
     today_note = os.path.join(STANDUP_NOTES, today + EXT)
-    tomorrow = datetime.strftime(datetime.now() + timedelta(days=1), '%Y%m%d')
+    tomorrow = date.strftime(next_weekday(date.today()), '%Y%m%d')
     tomorrow_note = os.path.join(STANDUP_NOTES, tomorrow + EXT)
 
     if not os.path.exists(STANDUP_NOTES):
@@ -71,6 +71,16 @@ def read_note(note):
             print(f.read())
     else:
         print(note + ' doesn\'t exist yet.')
+
+
+def next_weekday(day: date) -> date:
+    tomorrow = day + timedelta(days=1)
+    day_num = tomorrow.weekday()
+    # Monday - Friday (0-4), Saturday(5), Sunday(6)
+    if day_num < 5:  # Weekday
+        return tomorrow
+    else:  # Weekend
+        return next_weekday(tomorrow)
 
 
 parser = ArgumentParser()
