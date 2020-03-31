@@ -8,7 +8,7 @@ python-editor = "==1.0.4"
 pyperclip = "==1.8.0"
 
 [dev-packages]
+pylint = "*"
 
 [requires]
 python_version = "3.7"
-

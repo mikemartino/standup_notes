@@ -11,7 +11,22 @@ EXT = '.standup-notes.txt'
 STANDUP_NOTES = os.path.join(os.environ.get("HOME"), 'Desktop/standup-notes')
 STANDUP_TEMPLATE = resource_stream('standup_notes.resources', 'standup.template')
 
-def main(arguments: Namespace):
+def main():
+    parser = ArgumentParser()
+    parser.add_argument('--list', help='List all stand-up notes.', action='store_true')
+    parser.add_argument('--read-today', help='Read today\'s stand-up notes.', action='store_true')
+    parser.add_argument('--read-tomorrow', help='Read tomorrow\'s stand-up notes.', action='store_true')
+    parser.add_argument('--copy-today', help='Copy today\'s stand-up notes to the clipboard.', action='store_true')
+    parser.add_argument('--copy-tomorrow', help='Copy tomorrow\'s stand-up notes to the clipboard.', action='store_true')
+    parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
+    parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
+    args = parser.parse_args()
+
+    # sys.argv includes a list of elements starting with the program name
+    if len(sys.argv) < 2:
+        parser.print_usage()
+        sys.exit(1)
+
     today = date.strftime(date.today(), '%Y%m%d')
     today_note = os.path.join(STANDUP_NOTES, today + EXT)
     tomorrow = date.strftime(next_weekday(date.today()), '%Y%m%d')
@@ -82,20 +97,5 @@ def next_weekday(day: date) -> date:
 
 
 if __name__ == '__main__':
-    parser = ArgumentParser()
-    parser.add_argument('--list', help='List all stand-up notes.', action='store_true')
-    parser.add_argument('--read-today', help='Read today\'s stand-up notes.', action='store_true')
-    parser.add_argument('--read-tomorrow', help='Read tomorrow\'s stand-up notes.', action='store_true')
-    parser.add_argument('--copy-today', help='Copy today\'s stand-up notes to the clipboard.', action='store_true')
-    parser.add_argument('--copy-tomorrow', help='Copy tomorrow\'s stand-up notes to the clipboard.', action='store_true')
-    parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
-    parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
-    args = parser.parse_args()
-
-    # sys.argv includes a list of elements starting with the program name
-    if len(sys.argv) < 2:
-        parser.print_usage()
-        sys.exit(1)
-    
-    main(args)
+    main()
 
