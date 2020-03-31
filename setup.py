@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="standup-notes-mike", # Replace with your own username
+    name="standup-notes", 
     version="0.0.1",
     author="Mike Martino",
     author_email="mikemartino86@gmail.com",
@@ -20,3 +20,4 @@ setuptools.setup(
     ],
     python_requires='>=3.7',
 )
+

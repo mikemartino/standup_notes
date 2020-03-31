@@ -1,8 +1,8 @@
-## Build
+## Configure
 ```
-./build.sh
+sudo python3 -m pip install pipenv 
+alias standup-notes=<workspace>/standup_notes/bin/standup-notes
 ```
-Executable `standup-notes` gets copied to _/usr/local/bin_.
 
 ## Run
 ```

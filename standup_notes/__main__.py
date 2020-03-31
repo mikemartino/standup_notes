@@ -1,16 +1,15 @@
-#!/usr/bin/python3
-
 import os
 import sys
 from argparse import ArgumentParser, Namespace
 from datetime import date, timedelta
+from pkg_resources import resource_stream
 
 import editor
 import pyperclip
 
 EXT = '.standup-notes.txt'
 STANDUP_NOTES = os.path.join(os.environ.get("HOME"), 'Desktop/standup-notes')
-STANDUP_TEMPLATE = 'standup.template'
+STANDUP_TEMPLATE = resource_stream('standup_notes.resources', 'standup.template')
 
 def main(arguments: Namespace):
     today = date.strftime(date.today(), '%Y%m%d')
@@ -59,8 +58,8 @@ def edit_note(note):
     if os.path.exists(note):
         editor.edit(note)
     else:
-        with open(STANDUP_TEMPLATE, 'r') as f:
-            editor.edit(note, f.read())
+        # Note: It appears that the file will be saved regardless of what you do in your editor (in my case, vim).
+        editor.edit(note, STANDUP_TEMPLATE.read())
 
 
 def read_note(note):
@@ -82,19 +81,21 @@ def next_weekday(day: date) -> date:
         return next_weekday(tomorrow)
 
 
-parser = ArgumentParser()
-parser.add_argument('--list', help='List all stand-up notes.', action='store_true')
-parser.add_argument('--read-today', help='Read today\'s stand-up notes.', action='store_true')
-parser.add_argument('--read-tomorrow', help='Read tomorrow\'s stand-up notes.', action='store_true')
-parser.add_argument('--copy-today', help='Copy today\'s stand-up notes to the clipboard.', action='store_true')
-parser.add_argument('--copy-tomorrow', help='Copy tomorrow\'s stand-up notes to the clipboard.', action='store_true')
-parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
-parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
-args = parser.parse_args()
+if __name__ == '__main__':
+    parser = ArgumentParser()
+    parser.add_argument('--list', help='List all stand-up notes.', action='store_true')
+    parser.add_argument('--read-today', help='Read today\'s stand-up notes.', action='store_true')
+    parser.add_argument('--read-tomorrow', help='Read tomorrow\'s stand-up notes.', action='store_true')
+    parser.add_argument('--copy-today', help='Copy today\'s stand-up notes to the clipboard.', action='store_true')
+    parser.add_argument('--copy-tomorrow', help='Copy tomorrow\'s stand-up notes to the clipboard.', action='store_true')
+    parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
+    parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
+    args = parser.parse_args()
 
-# sys.argv includes a list of elements starting with the program name
-if len(sys.argv) < 2:
-    parser.print_usage()
-    sys.exit(1)
+    # sys.argv includes a list of elements starting with the program name
+    if len(sys.argv) < 2:
+        parser.print_usage()
+        sys.exit(1)
+    
+    main(args)
 
-main(args)
