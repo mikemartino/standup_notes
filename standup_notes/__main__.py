@@ -20,7 +20,7 @@ def main():
     parser.add_argument('--copy-tomorrow', help='Copy tomorrow\'s stand-up notes to the clipboard.', action='store_true')
     parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
     parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
-    args = parser.parse_args()
+    arguments = parser.parse_args()
 
     # sys.argv includes a list of elements starting with the program name
     if len(sys.argv) < 2:
