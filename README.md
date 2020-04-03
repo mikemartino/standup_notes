@@ -2,7 +2,7 @@
 ```
 ### From source code
 sudo python3 -m pip install pipenv 
-sudo python3 setup.py install
+sudo python3 setup.py install --user
 
 ### From PyPi
 TODO instructions on pip installing from PyPi
