@@ -1,7 +1,11 @@
 ## Configure
 ```
+### From source code
 sudo python3 -m pip install pipenv 
-alias standup-notes=<workspace>/standup_notes/bin/standup-notes
+sudo python3 setup.py install --user
+
+### From PyPi
+sudo pip3 install standup-notes
 ```
 
 ## Run
