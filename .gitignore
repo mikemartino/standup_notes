@@ -1,8 +1,8 @@
 .idea
-Pipfile.lock
 .venv
 build
 dist
 *.spec
 standup_notes/__pycache__
 standup_notes.egg-info
+.vscode

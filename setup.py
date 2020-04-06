@@ -1,9 +1,9 @@
-import setuptools
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setuptools.setup(
+setup(
     name="standup-notes", 
     version="0.0.1",
     author="Mike Martino",
@@ -12,7 +12,16 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="http://www.mikemartino.ca",
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
+    install_requires=['python-editor==1.0.4', 'pyperclip==1.8.0'],
+    entry_points={
+          'console_scripts': [
+              'standup-notes = standup_notes.__main__:main'
+          ]
+      },
+    package_data={
+        "standup_notes": ["resources/*.template"],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
