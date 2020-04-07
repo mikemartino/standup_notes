@@ -1,8 +1,8 @@
 ## Configure
 ```
 ### From source code
-sudo python3 -m pip install pipenv 
-sudo python3 setup.py install --user
+python3 -m pip install pipenv 
+python3 setup.py install --user
 
 ### From PyPi
 pip3 install standup-notes
