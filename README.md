@@ -5,7 +5,7 @@ sudo python3 -m pip install pipenv
 sudo python3 setup.py install --user
 
 ### From PyPi
-sudo pip3 install standup-notes
+pip3 install standup-notes
 ```
 
 ## Run
