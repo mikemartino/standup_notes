@@ -10,7 +10,7 @@ on:
 jobs:
   deploy:
 
-    runs-on: [macos,linux]
+    runs-on: [macos,linux,self-hosted]
 
     steps:
     - uses: actions/checkout@v2
