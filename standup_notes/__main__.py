@@ -39,7 +39,7 @@ def main():
         os.mkdir(STANDUP_NOTES)
 
     if arguments.list:
-        for note in os.listdir(STANDUP_NOTES):
+        for note in reversed(sorted(os.listdir(STANDUP_NOTES))):
             print(os.path.join(STANDUP_NOTES, note))
 
     if arguments.read_yesterday:
