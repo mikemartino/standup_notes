@@ -1,4 +1,5 @@
 Welcome to Standup-Notes! A simple way to capture notes for your daily standup meetings.
+
 https://mikemartino.github.io/standup_notes/
 
 ## Installation
