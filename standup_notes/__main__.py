@@ -2,6 +2,7 @@ import os
 import sys
 from argparse import ArgumentParser, Namespace
 from datetime import date, timedelta
+from dotenv import load_dotenv
 from typing import Callable
 
 from pkg_resources import resource_stream
@@ -9,8 +10,6 @@ from pkg_resources import resource_stream
 import editor
 import pyperclip
 
-EXT = '.standup-notes.txt'
-STANDUP_NOTES = os.path.join(os.environ.get("HOME"), 'Desktop/standup-notes')
 STANDUP_TEMPLATE = resource_stream('standup_notes.resources', 'standup.template')
 
 
@@ -29,18 +28,22 @@ def main():
     parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
     parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
     arguments = parser.parse_args()
+    
+    load_dotenv()
 
     # sys.argv includes a list of elements starting with the program name
     if len(sys.argv) < 2:
         parser.print_usage()
         sys.exit(1)
 
-    if not os.path.exists(STANDUP_NOTES):
-        os.mkdir(STANDUP_NOTES)
+    standup_notes_dir = os.getenv("STANDUP_NOTES_DIR")
+
+    if not os.path.exists(standup_notes_dir):
+        os.mkdir(standup_notes_dir)
 
     if arguments.list:
-        for note in reversed(sorted(os.listdir(STANDUP_NOTES))):
-            print(os.path.join(STANDUP_NOTES, note))
+        for note in reversed(sorted(os.listdir(standup_notes_dir))):
+            print(os.path.join(standup_notes_dir, note))
 
     if arguments.read_yesterday:
         read_note(last_weekday(date.today()))
@@ -72,7 +75,7 @@ def main():
 
 def get_note_name(weekday: date):
     """Map the date to the proper path of the standup-notes file for the day."""
-    return os.path.join(STANDUP_NOTES, date.strftime(weekday, '%Y%m%d') + EXT)
+    return os.path.join(os.getenv("STANDUP_NOTES_DIR"), date.strftime(weekday, '%Y%m%d') + os.getenv("STANDUP_NOTES_EXT"))
 
 
 def copy_note(day: date):

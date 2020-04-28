@@ -6,9 +6,10 @@ name = "pypi"
 [packages]
 python-editor = "==1.0.4"
 pyperclip = "==1.8.0"
+python-dotenv = "==0.13.0"
 
 [dev-packages]
-pylint = "==1.9.5"
+pylint = "==2.5.0"
 
 [requires]
 python_version = "3.7"
