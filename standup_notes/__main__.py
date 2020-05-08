@@ -95,6 +95,7 @@ def edit_note(day: date):
     else:
         # Note: It appears that the file will be saved regardless of what you do in your editor (in my case, vim).
         editor.edit(note, STANDUP_TEMPLATE.read())
+        # Note: Date will be inserted after the document has been finished being created
         f = open(note, "r")
         contents = f.readlines()
         f.close()
