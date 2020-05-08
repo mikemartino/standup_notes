@@ -29,6 +29,7 @@ def main():
     parser.add_argument('--edit-yesterday', help='Edit yesterday\'s stand-up notes.', action='store_true')
     parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
     parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
+    parser.add_argument('--delete-notes', help='Delete stand-up notes x amount of days ago', action='store', dest="amount", type=int)
     arguments = parser.parse_args()
 
     # sys.argv includes a list of elements starting with the program name
@@ -69,6 +70,9 @@ def main():
 
     if arguments.copy_tomorrow:
         copy_note(next_weekday(date.today()))
+
+    if arguments.delete_notes:
+        delete_notes(amount)
 
 
 def get_note_name(weekday: date):
@@ -134,6 +138,10 @@ def iterate_weekday(day: date, func: Callable[[date], date]) -> date:
         return next_day
     else:  # Weekend
         return iterate_weekday(next_day, func)
+
+
+def delete_notes(amount):
+    print(amount)
 
 
 if __name__ == '__main__':
