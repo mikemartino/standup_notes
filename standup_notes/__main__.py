@@ -8,6 +8,7 @@ from pkg_resources import resource_stream
 
 import editor
 import pyperclip
+import argcomplete, argparse
 
 EXT = '.standup-notes.txt'
 STANDUP_NOTES = os.path.join(os.environ.get("HOME"), 'Desktop/standup-notes')
@@ -15,7 +16,7 @@ STANDUP_TEMPLATE = resource_stream('standup_notes.resources', 'standup.template'
 
 
 def main():
-    parser = ArgumentParser()
+    parser = argparse.ArgumentParser()
     parser.add_argument('--list', help='List all stand-up notes.', action='store_true')
     parser.add_argument('--read-yesterday', help='Read yesterday\'s stand-up notes.', action='store_true')
     parser.add_argument('--read-today', help='Read today\'s stand-up notes.', action='store_true')
@@ -94,6 +95,16 @@ def edit_note(day: date):
     else:
         # Note: It appears that the file will be saved regardless of what you do in your editor (in my case, vim).
         editor.edit(note, STANDUP_TEMPLATE.read())
+        f = open(note, "r")
+        contents = f.readlines()
+        f.close()
+        date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
+        contents.insert(0, date_of_note)
+
+        f = open(note, "w")
+        contents = "".join(contents)
+        f.write(contents)
+        f.close()
 
 
 def read_note(day: date):
