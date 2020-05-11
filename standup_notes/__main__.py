@@ -1,14 +1,15 @@
+
+# PYTHON_ARGCOMPLETE_OK
 import os
 import sys
-from argparse import ArgumentParser, Namespace
 from datetime import date, timedelta
 from typing import Callable
 
-from pkg_resources import resource_stream
-
+import argcomplete
+import argparse
 import editor
 import pyperclip
-import argcomplete, argparse
+from pkg_resources import resource_stream
 
 EXT = '.standup-notes.txt'
 STANDUP_NOTES = os.path.join(os.environ.get("HOME"), 'Desktop/standup-notes')
@@ -29,7 +30,8 @@ def main():
     parser.add_argument('--edit-yesterday', help='Edit yesterday\'s stand-up notes.', action='store_true')
     parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
     parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
-    parser.add_argument('--delete-notes', help='Delete stand-up notes x amount of days ago', action='store', dest="amount", type=int)
+    parser.add_argument('--delete-notes', help='Delete stand-up notes x amount of days ago', action='store', type=int)
+    argcomplete.autocomplete(parser)
     arguments = parser.parse_args()
 
     # sys.argv includes a list of elements starting with the program name
@@ -72,7 +74,7 @@ def main():
         copy_note(next_weekday(date.today()))
 
     if arguments.delete_notes:
-        delete_notes(amount)
+        delete_notes(arguments.delete_notes)
 
 
 def get_note_name(weekday: date):
@@ -141,7 +143,31 @@ def iterate_weekday(day: date, func: Callable[[date], date]) -> date:
 
 
 def delete_notes(amount):
-    print(amount)
+    file_to_delete = []
+    for file in os.listdir(STANDUP_NOTES):
+        value = int(file.split('.')[0])
+        if value < amount:
+            file_to_delete.append(file)
+    if file_to_delete:
+        print("Here are the file to be deleted")
+        for file in file_to_delete:
+            print(file)
+        while True:
+            result = input("Are you sure you want to delete these files y/n: ")
+            if result.lower() == 'y':
+                for file in file_to_delete:
+                    os.remove(os.path.join(STANDUP_NOTES, file))
+                print("Files have been deleted.")
+                break
+            if result.lower() == 'n':
+                print("No files to be deleted")
+                break
+            else:
+                print("Please enter a valid response")
+
+
+    else:
+        print("No files to be deleted")
 
 
 if __name__ == '__main__':
