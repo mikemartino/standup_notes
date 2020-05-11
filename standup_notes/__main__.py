@@ -1,4 +1,3 @@
-
 # PYTHON_ARGCOMPLETE_OK
 import os
 import sys
@@ -18,19 +17,18 @@ STANDUP_TEMPLATE = resource_stream('standup_notes.resources', 'standup.template'
 
 def main():
     parser = argparse.ArgumentParser()
+    days = parser.add_mutually_exclusive_group()
+
+    days.add_argument("--today", action="store_true")
+    days.add_argument("--tomorrow", action="store_true")
+    days.add_argument("--yesterday", action="store_true")
+
     parser.add_argument('--list', help='List all stand-up notes.', action='store_true')
-    parser.add_argument('--read-yesterday', help='Read yesterday\'s stand-up notes.', action='store_true')
-    parser.add_argument('--read-today', help='Read today\'s stand-up notes.', action='store_true')
-    parser.add_argument('--read-tomorrow', help='Read tomorrow\'s stand-up notes.', action='store_true')
-    parser.add_argument('--copy-yesterday', help='Copy yesterday\'s stand-up notes to the clipboard.',
+    parser.add_argument('-r', '--read', help='Read stand-up notes',
                         action='store_true')
-    parser.add_argument('--copy-today', help='Copy today\'s stand-up notes to the clipboard.', action='store_true')
-    parser.add_argument('--copy-tomorrow', help='Copy tomorrow\'s stand-up notes to the clipboard.',
-                        action='store_true')
-    parser.add_argument('--edit-yesterday', help='Edit yesterday\'s stand-up notes.', action='store_true')
-    parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
-    parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
-    parser.add_argument('--delete-notes', help='Delete stand-up notes x amount of days ago', action='store', type=int)
+    parser.add_argument('-c', '--copy', help='Copy stand-up notes', action='store_true')
+    parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
+    parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=int)
     argcomplete.autocomplete(parser)
     arguments = parser.parse_args()
 
@@ -46,6 +44,32 @@ def main():
         for note in reversed(sorted(os.listdir(STANDUP_NOTES))):
             print(os.path.join(STANDUP_NOTES, note))
 
+    if arguments.delete:
+        delete_notes(arguments.delete)
+
+    if arguments.read:
+        if arguments.yesterday:
+            read_note(last_weekday(date.today()))
+        if arguments.today:
+            read_note(date.today())
+        if arguments.tomorrow:
+            read_note(next_weekday(date.today()))
+
+    if arguments.edit:
+        if arguments.yesterday:
+            edit_note(last_weekday(date.today()))
+        if arguments.today:
+            edit_note(date.today())
+        if arguments.tomorrow:
+            edit_note(next_weekday(date.today()))
+    if arguments.copy:
+        if arguments.yesterday:
+            copy_note(last_weekday(date.today()))
+        if arguments.today:
+            copy_note(date.today())
+        if arguments.tomorrow:
+            copy_note(next_weekday(date.today()))
+    """
     if arguments.read_yesterday:
         read_note(last_weekday(date.today()))
 
@@ -72,9 +96,7 @@ def main():
 
     if arguments.copy_tomorrow:
         copy_note(next_weekday(date.today()))
-
-    if arguments.delete_notes:
-        delete_notes(arguments.delete_notes)
+    """
 
 
 def get_note_name(weekday: date):
@@ -144,6 +166,9 @@ def iterate_weekday(day: date, func: Callable[[date], date]) -> date:
 
 def delete_notes(amount):
     file_to_delete = []
+    if len(str(amount)) != 8:
+        print("Please enter in a valid date")
+        return
     for file in os.listdir(STANDUP_NOTES):
         value = int(file.split('.')[0])
         if value < amount:
@@ -172,4 +197,3 @@ def delete_notes(amount):
 
 if __name__ == '__main__':
     main()
-

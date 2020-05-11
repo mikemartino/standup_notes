@@ -18,18 +18,30 @@ pip3 install standup-notes
 ```
 
 ## Run
-```
+ ```
+standup-notes --l
 standup-notes --list
-standup-notes --read-yesterday
-standup-notes --read-today
-standup-notes --read-tomorrow
-standup-notes --edit-yesterday
-standup-notes --edit-today
-standup-notes --edit-tomorrow
-standup-notes --copy-yesterday
-standup-notes --copy-today
-standup-notes --copy-tomorrow
+ ``` 
+ will list commands that can be run by the script
+
+ ```
+standup-notes --r
+standup-notes --read
+ ``` 
+will print out the stand up note based on the date flag passed
+
 ```
+standup-notes --read
+standup-notes --copy
+standup-notes --edit
+```
+#####Delete Notes
+```
+standup-notes --delete
+```
+Deletes all notes that are older then the date inputted
+
+
 
 # Why? Why not?
 
