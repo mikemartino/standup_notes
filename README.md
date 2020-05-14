@@ -16,27 +16,44 @@ python3 setup.py install --user
 ```
 pip3 install standup-notes
 ```
+###Bash Setup
+For a 1 time execution, use
+```
+source /path/to/standup-notes.bash
+```
+To permanently have bash completion, copy the standup-notes.bash into the bash-completion.d folder in your system
+```
+cp /path/to/standup-notes.bash /path/to/bash_completion.d
+```
 
-## Run
+## Commands
+#####List
  ```
 standup-notes --l
 standup-notes --list
  ``` 
  will list commands that can be run by the script
-
+####Read
  ```
 standup-notes --r
 standup-notes --read
  ``` 
 will print out the stand up note based on the date flag passed
-
+####Copy
 ```
-standup-notes --read
+standup-notes -c
 standup-notes --copy
+```
+will copy the standup-notes to the date selected to your clipboard
+####Edit
+```
+standup-notes -e
 standup-notes --edit
 ```
+will edit the note selected based on date flagged passed
 #####Delete Notes
 ```
+standup-notes -d
 standup-notes --delete
 ```
 Deletes all notes that are older then the date inputted
