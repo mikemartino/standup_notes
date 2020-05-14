@@ -23,7 +23,7 @@ def main():
     days.add_argument("--tomorrow", action="store_true")
     days.add_argument("--yesterday", action="store_true")
 
-    parser.add_argument('--list', help='List all stand-up notes.', action='store_true')
+    parser.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
     parser.add_argument('-r', '--read', help='Read stand-up notes',
                         action='store_true')
     parser.add_argument('-c', '--copy', help='Copy stand-up notes', action='store_true')
