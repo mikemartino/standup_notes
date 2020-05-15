@@ -4,7 +4,6 @@ import sys
 from datetime import date, timedelta
 from typing import Callable
 
-import argcomplete
 import argparse
 import editor
 import pyperclip
