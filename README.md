@@ -27,6 +27,13 @@ cp /path/to/standup-notes.bash /path/to/bash_completion.d
 ```
 
 ## Commands
+#####Day Flags
+```
+--yesterday
+--today
+--tomorrow
+```
+Pass the flags to the read, copy and edit execution to manipulate their respectives standup-notes
 #####List
  ```
 standup-notes --l
