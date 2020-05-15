@@ -28,7 +28,6 @@ def main():
     parser.add_argument('-c', '--copy', help='Copy stand-up notes', action='store_true')
     parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
     parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=int)
-    argcomplete.autocomplete(parser)
     arguments = parser.parse_args()
 
     # sys.argv includes a list of elements starting with the program name
@@ -44,58 +43,29 @@ def main():
             print(os.path.join(STANDUP_NOTES, note))
 
     if arguments.delete:
-        delete_notes(arguments.delete)
+
+        #delete_notes(arguments.delete)
 
     if arguments.read:
-        if arguments.yesterday:
-            read_note(last_weekday(date.today()))
-        if arguments.today:
-            read_note(date.today())
-        if arguments.tomorrow:
-            read_note(next_weekday(date.today()))
+        call_func_for_specified_day(read_note, arguments)
 
     if arguments.edit:
-        if arguments.yesterday:
-            edit_note(last_weekday(date.today()))
-        if arguments.today:
-            edit_note(date.today())
-        if arguments.tomorrow:
-            edit_note(next_weekday(date.today()))
+        call_func_for_specified_day(edit_note, arguments)
+
     if arguments.copy:
-        if arguments.yesterday:
-            copy_note(last_weekday(date.today()))
-        if arguments.today:
-            copy_note(date.today())
-        if arguments.tomorrow:
-            copy_note(next_weekday(date.today()))
-    """
-    if arguments.read_yesterday:
-        read_note(last_weekday(date.today()))
+        call_func_for_specified_day(copy_note, arguments)
 
-    if arguments.read_today:
-        read_note(date.today())
 
-    if arguments.read_tomorrow:
-        read_note(next_weekday(date.today()))
-
-    if arguments.edit_yesterday:
-        edit_note(last_weekday(date.today()))
-
-    if arguments.edit_today:
-        edit_note(date.today())
-
-    if arguments.edit_tomorrow:
-        edit_note(next_weekday(date.today()))
-
-    if arguments.copy_yesterday:
-        copy_note(last_weekday(date.today()))
-
-    if arguments.copy_today:
-        copy_note(date.today())
-
-    if arguments.copy_tomorrow:
-        copy_note(next_weekday(date.today()))
-    """
+def call_func_for_specified_day(func, arguments):
+    """Call the proper function to either """
+    if arguments.yesterday:
+        func(last_weekday(date.today()))
+    if arguments.today:
+        func(date.today())
+    if arguments.tomorrow:
+        func(next_weekday(date.today()))
+    if arguments.delete:
+        func(arguments.delete)
 
 
 def get_note_name(weekday: date):
