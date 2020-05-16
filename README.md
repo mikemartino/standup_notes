@@ -65,8 +65,8 @@ standup-notes --delete
 ```
 Deletes all notes that are older then the date inputted, format of date input shown below
 ```
-standup-notes -d YYYYMMDD
-standup-notes -d 20200505
+standup-notes -d YYYY-MM-DD
+standup-notes -d 2020-05-05
 ```
 This will delete any notes older then May 5th 2020
 

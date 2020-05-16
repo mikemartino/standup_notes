@@ -1,8 +1,9 @@
-# PYTHON_ARGCOMPLETE_OK
 import os
 import sys
+import datetime
 from datetime import date, timedelta
 from typing import Callable
+from string import Template
 
 import argparse
 import editor
@@ -27,7 +28,7 @@ def main():
                         action='store_true')
     parser.add_argument('-c', '--copy', help='Copy stand-up notes', action='store_true')
     parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
-    parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=int)
+    parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
     arguments = parser.parse_args()
 
     # sys.argv includes a list of elements starting with the program name
@@ -43,8 +44,7 @@ def main():
             print(os.path.join(STANDUP_NOTES, note))
 
     if arguments.delete:
-
-        #delete_notes(arguments.delete)
+        call_func_for_specified_day(delete_notes, arguments)
 
     if arguments.read:
         call_func_for_specified_day(read_note, arguments)
@@ -90,19 +90,8 @@ def edit_note(day: date):
     if os.path.exists(note):
         editor.edit(note)
     else:
-        # Note: It appears that the file will be saved regardless of what you do in your editor (in my case, vim).
-        editor.edit(note, STANDUP_TEMPLATE.read())
-        # Note: Date will be inserted after the document has been finished being created
-        f = open(note, "r")
-        contents = f.readlines()
-        f.close()
         date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
-        contents.insert(0, date_of_note)
-
-        f = open(note, "w")
-        contents = "".join(contents)
-        f.write(contents)
-        f.close()
+        editor.edit(note, contents=date_of_note + str(STANDUP_TEMPLATE.read().decode('UTF-8')))
 
 
 def read_note(day: date):
@@ -133,23 +122,21 @@ def iterate_weekday(day: date, func: Callable[[date], date]) -> date:
         return iterate_weekday(next_day, func)
 
 
-def delete_notes(amount):
-    file_to_delete = []
-    if len(str(amount)) != 8:
-        print("Please enter in a valid date")
-        return
+def delete_notes(date_to_delete):
+    files_to_delete = []
+    validate(date_to_delete)
+    date_in_int = int(date_to_delete.replace('-', ''))
     for file in os.listdir(STANDUP_NOTES):
         value = int(file.split('.')[0])
-        if value < amount:
-            file_to_delete.append(file)
-    if file_to_delete:
+        if value < date_in_int:
+            files_to_delete.append(file)
+    if files_to_delete:
         print("Here are the file to be deleted")
-        for file in file_to_delete:
-            print(file)
+        print(*files_to_delete, sep='\n')
         while True:
             result = input("Are you sure you want to delete these files y/n: ")
             if result.lower() == 'y':
-                for file in file_to_delete:
+                for file in files_to_delete:
                     os.remove(os.path.join(STANDUP_NOTES, file))
                 print("Files have been deleted.")
                 break
@@ -158,10 +145,15 @@ def delete_notes(amount):
                 break
             else:
                 print("Please enter a valid response")
-
-
     else:
         print("No files to be deleted")
+
+
+def validate(date_text):
+    try:
+        datetime.datetime.strptime(date_text, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError("Incorrect data format, should be YYYY-MM-DD")
 
 
 if __name__ == '__main__':
