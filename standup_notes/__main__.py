@@ -1,9 +1,7 @@
 import os
 import sys
-import datetime
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 from typing import Callable
-from string import Template
 
 import argparse
 import editor
@@ -151,7 +149,7 @@ def delete_notes(date_to_delete):
 
 def validate(date_text):
     try:
-        datetime.datetime.strptime(date_text, '%Y-%m-%d')
+        datetime.strptime(date_text, '%Y-%m-%d')
     except ValueError:
         raise ValueError("Incorrect data format, should be YYYY-MM-DD")
 
