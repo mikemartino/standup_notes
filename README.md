@@ -16,7 +16,7 @@ python3 setup.py install --user
 ```
 pip3 install standup-notes
 ```
-###Bash Setup
+### Bash Setup
 For a 1 time execution, use
 ```
 source /path/to/standup-notes.bash
@@ -27,7 +27,7 @@ cp /path/to/standup-notes.bash /path/to/bash_completion.d
 ```
 
 ## Commands
-#####Day Flags
+##### Day Flags
 ```
 --yesterday
 --today
