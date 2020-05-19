@@ -64,6 +64,8 @@ def call_func_for_specified_day(func, arguments):
         func(next_weekday(date.today()))
     if arguments.delete:
         func(arguments.delete)
+    else:
+        print("Make sure to include the proper argument. Type standup-notes -h for more info")
 
 
 def get_note_name(weekday: date):
