@@ -1,13 +1,12 @@
 import os
 import sys
-from argparse import ArgumentParser, Namespace
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 from typing import Callable
 
-from pkg_resources import resource_stream
-
+import argparse
 import editor
 import pyperclip
+from pkg_resources import resource_stream
 
 EXT = '.standup-notes.txt'
 STANDUP_NOTES = os.path.join(os.environ.get("HOME"), 'Desktop/standup-notes')
@@ -15,19 +14,19 @@ STANDUP_TEMPLATE = resource_stream('standup_notes.resources', 'standup.template'
 
 
 def main():
-    parser = ArgumentParser()
-    parser.add_argument('--list', help='List all stand-up notes.', action='store_true')
-    parser.add_argument('--read-yesterday', help='Read yesterday\'s stand-up notes.', action='store_true')
-    parser.add_argument('--read-today', help='Read today\'s stand-up notes.', action='store_true')
-    parser.add_argument('--read-tomorrow', help='Read tomorrow\'s stand-up notes.', action='store_true')
-    parser.add_argument('--copy-yesterday', help='Copy yesterday\'s stand-up notes to the clipboard.',
+    parser = argparse.ArgumentParser()
+    days = parser.add_mutually_exclusive_group()
+
+    days.add_argument("--today", action="store_true")
+    days.add_argument("--tomorrow", action="store_true")
+    days.add_argument("--yesterday", action="store_true")
+
+    parser.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
+    parser.add_argument('-r', '--read', help='Read stand-up notes',
                         action='store_true')
-    parser.add_argument('--copy-today', help='Copy today\'s stand-up notes to the clipboard.', action='store_true')
-    parser.add_argument('--copy-tomorrow', help='Copy tomorrow\'s stand-up notes to the clipboard.',
-                        action='store_true')
-    parser.add_argument('--edit-yesterday', help='Edit yesterday\'s stand-up notes.', action='store_true')
-    parser.add_argument('--edit-today', help='Edit today\'s stand-up notes.', action='store_true')
-    parser.add_argument('--edit-tomorrow', help='Edit tomorrow\'s stand-up notes.', action='store_true')
+    parser.add_argument('-c', '--copy', help='Copy stand-up notes', action='store_true')
+    parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
+    parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
     arguments = parser.parse_args()
 
     # sys.argv includes a list of elements starting with the program name
@@ -42,32 +41,31 @@ def main():
         for note in reversed(sorted(os.listdir(STANDUP_NOTES))):
             print(os.path.join(STANDUP_NOTES, note))
 
-    if arguments.read_yesterday:
-        read_note(last_weekday(date.today()))
+    if arguments.delete:
+        call_func_for_specified_day(delete_notes, arguments)
 
-    if arguments.read_today:
-        read_note(date.today())
+    if arguments.read:
+        call_func_for_specified_day(read_note, arguments)
 
-    if arguments.read_tomorrow:
-        read_note(next_weekday(date.today()))
+    if arguments.edit:
+        call_func_for_specified_day(edit_note, arguments)
 
-    if arguments.edit_yesterday:
-        edit_note(last_weekday(date.today()))
+    if arguments.copy:
+        call_func_for_specified_day(copy_note, arguments)
 
-    if arguments.edit_today:
-        edit_note(date.today())
 
-    if arguments.edit_tomorrow:
-        edit_note(next_weekday(date.today()))
-
-    if arguments.copy_yesterday:
-        copy_note(last_weekday(date.today()))
-
-    if arguments.copy_today:
-        copy_note(date.today())
-
-    if arguments.copy_tomorrow:
-        copy_note(next_weekday(date.today()))
+def call_func_for_specified_day(func, arguments):
+    """Call the proper function to either """
+    if arguments.yesterday:
+        func(last_weekday(date.today()))
+    if arguments.today:
+        func(date.today())
+    if arguments.tomorrow:
+        func(next_weekday(date.today()))
+    if arguments.delete:
+        func(arguments.delete)
+    else:
+        print("Make sure to include the proper argument. Type standup-notes -h for more info")
 
 
 def get_note_name(weekday: date):
@@ -92,8 +90,8 @@ def edit_note(day: date):
     if os.path.exists(note):
         editor.edit(note)
     else:
-        # Note: It appears that the file will be saved regardless of what you do in your editor (in my case, vim).
-        editor.edit(note, STANDUP_TEMPLATE.read())
+        date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
+        editor.edit(note, contents=date_of_note + str(STANDUP_TEMPLATE.read().decode('UTF-8')))
 
 
 def read_note(day: date):
@@ -124,6 +122,39 @@ def iterate_weekday(day: date, func: Callable[[date], date]) -> date:
         return iterate_weekday(next_day, func)
 
 
+def delete_notes(date_to_delete):
+    files_to_delete = []
+    validate(date_to_delete)
+    date_in_int = int(date_to_delete.replace('-', ''))
+    for file in os.listdir(STANDUP_NOTES):
+        value = int(file.split('.')[0])
+        if value < date_in_int:
+            files_to_delete.append(file)
+    if files_to_delete:
+        print("Here are the file to be deleted")
+        print(*files_to_delete, sep='\n')
+        while True:
+            result = input("Are you sure you want to delete these files y/n: ")
+            if result.lower() == 'y':
+                for file in files_to_delete:
+                    os.remove(os.path.join(STANDUP_NOTES, file))
+                print("Files have been deleted.")
+                break
+            if result.lower() == 'n':
+                print("No files to be deleted")
+                break
+            else:
+                print("Please enter a valid response")
+    else:
+        print("No files to be deleted")
+
+
+def validate(date_text):
+    try:
+        datetime.strptime(date_text, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError("Incorrect data format, should be YYYY-MM-DD")
+
+
 if __name__ == '__main__':
     main()
-

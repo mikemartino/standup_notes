@@ -16,20 +16,61 @@ python3 setup.py install --user
 ```
 pip3 install standup-notes
 ```
+###Bash Setup
+For a 1 time execution, use
+```
+source /path/to/standup-notes.bash
+```
+To permanently have bash completion, copy the standup-notes.bash into the bash-completion.d folder in your system
+```
+cp /path/to/standup-notes.bash /path/to/bash_completion.d
+```
 
-## Run
+## Commands
+#####Day Flags
 ```
+--yesterday
+--today
+--tomorrow
+```
+Pass the flags to the read, copy and edit execution to manipulate their respectives standup-notes
+#####List
+ ```
+standup-notes --l
 standup-notes --list
-standup-notes --read-yesterday
-standup-notes --read-today
-standup-notes --read-tomorrow
-standup-notes --edit-yesterday
-standup-notes --edit-today
-standup-notes --edit-tomorrow
-standup-notes --copy-yesterday
-standup-notes --copy-today
-standup-notes --copy-tomorrow
+ ``` 
+ will list commands that can be run by the script
+####Read
+ ```
+standup-notes --r
+standup-notes --read
+ ``` 
+will print out the stand up note based on the date flag passed
+####Copy
 ```
+standup-notes -c
+standup-notes --copy
+```
+will copy the standup-notes to the date selected to your clipboard
+####Edit
+```
+standup-notes -e
+standup-notes --edit
+```
+will edit the note selected based on date flagged passed
+#####Delete Notes
+```
+standup-notes -d
+standup-notes --delete
+```
+Deletes all notes that are older then the date inputted, format of date input shown below
+```
+standup-notes -d YYYY-MM-DD
+standup-notes -d 2020-05-05
+```
+This will delete any notes older then May 5th 2020
+
+
 
 # Why? Why not?
 
