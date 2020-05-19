@@ -34,13 +34,13 @@ cp /path/to/standup-notes.bash /path/to/bash_completion.d
 --tomorrow
 ```
 Pass the flags to the read, copy and edit execution to manipulate their respectives standup-notes
-#####List
+##### List
  ```
 standup-notes --l
 standup-notes --list
  ``` 
  will list commands that can be run by the script
-####Read
+#### Read
  ```
 standup-notes --r
 standup-notes --read

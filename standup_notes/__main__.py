@@ -87,22 +87,9 @@ def edit_note(day: date):
     """Launches the default $EDITOR or a suitable default. If the note already exists, the editor opens it for editing.
     If the note does not exist, the editor opens a new file using the stand-up template."""
     note = get_note_name(day)
-    previous_days_note = get_note_name(last_weekday(day))
     if os.path.exists(note):
         editor.edit(note)
     else:
-        if os.path.exists(previous_days_note):
-            while True:
-                response = input("A copy of yesterdays notes exists, would you like to copy y/n: ")
-                if response.lower() == 'y':
-                    break
-                if response.lower() == 'n':
-
-                    break
-                else:
-                    print("Please enter a valid response")
-        else:
-            response = input("Yesterdays notes were not found, nothing will be copied. Press enter to continue: ")
         date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
         editor.edit(note, contents=date_of_note + str(STANDUP_TEMPLATE.read().decode('UTF-8')))
 
