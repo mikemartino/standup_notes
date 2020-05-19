@@ -24,7 +24,7 @@ def main():
     parser.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
     parser.add_argument('-r', '--read', help='Read stand-up notes',
                         action='store_true')
-    parser.add_argument('-c', '--copy', help='Copy stand-up notes', action='store_true')
+    parser.add_argument('-c', '--copy', help='Copy stand-up notes to clipboard', action='store_true')
     parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
     parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
     arguments = parser.parse_args()
@@ -48,22 +48,29 @@ def main():
         call_func_for_specified_day(read_note, arguments)
 
     if arguments.edit:
-        call_func_for_specified_day(edit_note, arguments)
+        if arguments.copy:
+            call_func_for_specified_day(copy_prev, arguments)
+        else:
+            call_func_for_specified_day(edit_note, arguments)
 
     if arguments.copy:
         call_func_for_specified_day(copy_note, arguments)
 
 
 def call_func_for_specified_day(func, arguments):
-    """Call the proper function to either """
+    """Calls the proper function """
     if arguments.yesterday:
         func(last_weekday(date.today()))
+        return 0
     if arguments.today:
         func(date.today())
+        return 0
     if arguments.tomorrow:
         func(next_weekday(date.today()))
+        return 0
     if arguments.delete:
         func(arguments.delete)
+        return 0
     else:
         print("Make sure to include the proper argument. Type standup-notes -h for more info")
 
@@ -83,14 +90,51 @@ def copy_note(day: date):
         print(note + ' doesn\'t exist yet.')
 
 
+def copy_prev(day: date):
+    previous_days_note = get_note_name(last_weekday(day))
+    note = get_note_name(day)
+    date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
+    beginning_format = "__What I did yesterday__:\n"
+    end_format = "__What I'm doing today__:\n \n__Blockers__:\n-none\n"
+    flag = False
+    lines_to_append = []
+
+    if os.path.exists(previous_days_note):
+        result = verify_input("Found yesterdays notes, would you like to insert applicable information into your "
+                              "notes y/n: ")
+        if result:
+            with open(previous_days_note) as f:
+                for line in f:
+                    if flag:
+                        if '__Blockers__:' not in line:
+                            lines_to_append.append(line)
+                    if '__What I\'m doing today__:' in line:
+                        flag = True
+                    if '__Blockers__:' in line:
+                        flag = False
+            if os.path.exists(note):
+                return 0
+            else:
+                with open(note, "w+") as f:
+                    f.write(date_of_note + beginning_format + " ".join(lines_to_append) + end_format)
+
+
+        if not result:
+            response = input("Yesterdays notes will not be copied. Press enter to continue")
+    else:
+        response = input("Yesterdays notes were not found, nothing will be copied. Press enter to continue: ")
+    edit_note(day)
+
+
 def edit_note(day: date):
     """Launches the default $EDITOR or a suitable default. If the note already exists, the editor opens it for editing.
     If the note does not exist, the editor opens a new file using the stand-up template."""
     note = get_note_name(day)
+
+    date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
     if os.path.exists(note):
         editor.edit(note)
     else:
-        date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
         editor.edit(note, contents=date_of_note + str(STANDUP_TEMPLATE.read().decode('UTF-8')))
 
 
@@ -133,18 +177,13 @@ def delete_notes(date_to_delete):
     if files_to_delete:
         print("Here are the file to be deleted")
         print(*files_to_delete, sep='\n')
-        while True:
-            result = input("Are you sure you want to delete these files y/n: ")
-            if result.lower() == 'y':
-                for file in files_to_delete:
-                    os.remove(os.path.join(STANDUP_NOTES, file))
+        result = verify_input("Are you sure you want to delete these files y/n: ")
+        if result:
+            for file in files_to_delete:
+                os.remove(os.path.join(STANDUP_NOTES, file))
                 print("Files have been deleted.")
-                break
-            if result.lower() == 'n':
+            if not result:
                 print("No files to be deleted")
-                break
-            else:
-                print("Please enter a valid response")
     else:
         print("No files to be deleted")
 
@@ -154,6 +193,17 @@ def validate(date_text):
         datetime.strptime(date_text, '%Y-%m-%d')
     except ValueError:
         raise ValueError("Incorrect data format, should be YYYY-MM-DD")
+
+
+def verify_input(log):
+    while True:
+        result = input(log)
+        if result.lower() == 'y':
+            return True
+        if result.lower() == 'n':
+            return False
+        else:
+            print("Please enter a valid response")
 
 
 if __name__ == '__main__':
