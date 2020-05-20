@@ -110,7 +110,7 @@ def copy_prev(day: date):
                     if copy_text:
                         if '__Blockers__:' not in line:
                             lines_to_append.append(line)
-                    if '__What I\'m doing today__:' in line:
+                    if '__What I\'m doing' in line:
                         copy_text = True
                     if '__Blockers__:' in line:
                         copy_text = False
