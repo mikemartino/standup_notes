@@ -2,7 +2,6 @@ import os
 import sys
 from datetime import datetime, date, timedelta
 from typing import Callable
-from mattermostdriver import Driver
 
 import argparse
 import editor
@@ -59,12 +58,9 @@ def main():
     if arguments.copy:
         call_func_for_specified_day(copy_note, arguments)
 
-    if arguments.post:
-        matter_post()
-
 
 def call_func_for_specified_day(func, arguments):
-    """Calls the proper function """
+    """Functions calls to make sure proper day arguments are being passed to thei respective functions"""
     if arguments.yesterday:
         func(last_weekday(date.today()))
         return 0
@@ -196,10 +192,6 @@ def delete_notes(date_to_delete):
     else:
         print("No files to be deleted")
 
-
-def matter_post():
-
-    return 0
 
 def validate(date_text):
     try:
