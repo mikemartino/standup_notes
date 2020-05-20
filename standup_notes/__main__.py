@@ -2,6 +2,7 @@ import os
 import sys
 from datetime import datetime, date, timedelta
 from typing import Callable
+from mattermostdriver import Driver
 
 import argparse
 import editor
@@ -24,9 +25,11 @@ def main():
     parser.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
     parser.add_argument('-r', '--read', help='Read stand-up notes',
                         action='store_true')
-    parser.add_argument('-c', '--copy', help='Copy stand-up notes to clipboard', action='store_true')
+    parser.add_argument('-c', '--copy', help='Flag passed when using edit to copy yesterdays notes or call used to '
+                                             'copy notes to clipboard', action='store_true')
     parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
     parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
+    parser.add_argument('-p', '--post', help="Post specified days chats to mattermost", action = 'store_true')
     arguments = parser.parse_args()
 
     # sys.argv includes a list of elements starting with the program name
@@ -55,6 +58,9 @@ def main():
 
     if arguments.copy:
         call_func_for_specified_day(copy_note, arguments)
+
+    if arguments.post:
+        matter_post()
 
 
 def call_func_for_specified_day(func, arguments):
@@ -96,7 +102,7 @@ def copy_prev(day: date):
     date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
     beginning_format = "__What I did yesterday__:\n"
     end_format = "__What I'm doing today__:\n \n__Blockers__:\n-none\n"
-    flag = False
+    copy_text = False
     lines_to_append = []
 
     if os.path.exists(previous_days_note):
@@ -105,13 +111,13 @@ def copy_prev(day: date):
         if result:
             with open(previous_days_note) as f:
                 for line in f:
-                    if flag:
+                    if copy_text:
                         if '__Blockers__:' not in line:
                             lines_to_append.append(line)
                     if '__What I\'m doing today__:' in line:
-                        flag = True
+                        copy_text = True
                     if '__Blockers__:' in line:
-                        flag = False
+                        copy_text = False
             if os.path.exists(note):
                 with open(note) as f:
                     data = f.readlines()
@@ -122,8 +128,6 @@ def copy_prev(day: date):
             else:
                 with open(note, "w+") as f:
                     f.write(date_of_note + beginning_format + " ".join(lines_to_append) + end_format)
-
-
         if not result:
             response = input("Yesterdays notes will not be copied. Press enter to continue")
     else:
@@ -187,11 +191,15 @@ def delete_notes(date_to_delete):
             for file in files_to_delete:
                 os.remove(os.path.join(STANDUP_NOTES, file))
                 print("Files have been deleted.")
-            if not result:
-                print("No files to be deleted")
+        else:
+            print("No files to be deleted")
     else:
         print("No files to be deleted")
 
+
+def matter_post():
+
+    return 0
 
 def validate(date_text):
     try:
