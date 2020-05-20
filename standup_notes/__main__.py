@@ -113,7 +113,12 @@ def copy_prev(day: date):
                     if '__Blockers__:' in line:
                         flag = False
             if os.path.exists(note):
-                return 0
+                with open(note) as f:
+                    data = f.readlines()
+                data[1] = data[1] + "".join(lines_to_append)
+                with open(note, 'w') as file:
+                    file.writelines(data)
+
             else:
                 with open(note, "w+") as f:
                     f.write(date_of_note + beginning_format + " ".join(lines_to_append) + end_format)
