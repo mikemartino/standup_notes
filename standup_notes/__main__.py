@@ -11,24 +11,25 @@ from pkg_resources import resource_stream
 EXT = '.standup-notes.txt'
 STANDUP_NOTES = os.path.join(os.environ.get("HOME"), 'Desktop/standup-notes')
 STANDUP_TEMPLATE = resource_stream('standup_notes.resources', 'standup.template')
+STANDUP_TEMPLATE_STRING = str(STANDUP_TEMPLATE.read().decode('UTF-8'))
 
 
 def main():
+    print(STANDUP_TEMPLATE_STRING)
     parser = argparse.ArgumentParser()
     days = parser.add_mutually_exclusive_group()
 
-    days.add_argument("--today", action="store_true")
-    days.add_argument("--tomorrow", action="store_true")
-    days.add_argument("--yesterday", action="store_true")
+    days.add_argument("--today", help="Flag passed in to do action with today's notes", action="store_true")
+    days.add_argument("--tomorrow", help="Flag passed in to do action with tomorrow's notes", action="store_true")
+    days.add_argument("--yesterday", help="Flag passed in to do action with tomorrow's notes", action="store_true")
 
     parser.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
-    parser.add_argument('-r', '--read', help='Read stand-up notes',
-                        action='store_true')
-    parser.add_argument('-c', '--copy', help='Flag passed when using edit to copy yesterdays notes or call used to '
-                                             'copy notes to clipboard', action='store_true')
+    parser.add_argument('-r', '--read', help='Read stand-up notes', action='store_true')
+    parser.add_argument('-c', '--copy', help='If combined with the \'edit\' flag, copies the previous days TODO. '
+                                             'Otherwise, copies the specified day\'s notes ', action='store_true')
     parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
     parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
-    parser.add_argument('-p', '--post', help="Post specified days chats to mattermost", action = 'store_true')
+    parser.add_argument('-p', '--post', help="Post specified days chats to mattermost", action='store_true')
     arguments = parser.parse_args()
 
     # sys.argv includes a list of elements starting with the program name
@@ -96,8 +97,8 @@ def copy_prev(day: date):
     previous_days_note = get_note_name(last_weekday(day))
     note = get_note_name(day)
     date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
-    beginning_format = "__What I did yesterday__:\n"
-    end_format = "__What I'm doing today__:\n \n__Blockers__:\n-none\n"
+    beginning_format = str(STANDUP_TEMPLATE_STRING.splitlines()[0]) + '\n'
+    end_format = '\n'.join(STANDUP_TEMPLATE_STRING.splitlines()[2:])
     copy_text = False
     lines_to_append = []
 
@@ -122,8 +123,9 @@ def copy_prev(day: date):
                     file.writelines(data)
 
             else:
-                with open(note, "w+") as f:
-                    f.write(date_of_note + beginning_format + " ".join(lines_to_append) + end_format)
+                editor.edit(note, contents=date_of_note + beginning_format + " ".join(lines_to_append) + end_format)
+                # with open(note, "w+") as f:
+                #   f.write(date_of_note + beginning_format + " ".join(lines_to_append) + end_format)
         if not result:
             response = input("Yesterdays notes will not be copied. Press enter to continue")
     else:
@@ -140,7 +142,7 @@ def edit_note(day: date):
     if os.path.exists(note):
         editor.edit(note)
     else:
-        editor.edit(note, contents=date_of_note + str(STANDUP_TEMPLATE.read().decode('UTF-8')))
+        editor.edit(note, contents=date_of_note + STANDUP_TEMPLATE_STRING)
 
 
 def read_note(day: date):
