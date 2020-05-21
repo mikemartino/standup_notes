@@ -149,6 +149,11 @@ def delete_notes(date_to_delete):
         print("No files to be deleted")
 
 
+def matter_post():
+
+    return 0
+
+
 def validate(date_text):
     try:
         datetime.strptime(date_text, '%Y-%m-%d')
