@@ -60,7 +60,7 @@ def main():
 
 
 def call_func_for_specified_day(func, arguments):
-    """Functions calls to make sure proper day arguments are being passed to thei respective functions"""
+    """Makes sure proper day arguments are being passed to their respective functions"""
     if arguments.yesterday:
         func(last_weekday(date.today()))
         return 0
@@ -110,7 +110,7 @@ def copy_prev(day: date):
                               "notes y/n: ")
         # If the user wants to copy previous days notes
         if result:
-            # Copy's applicable information from
+            # Copy's applicable information from previous days notes
             with open(previous_days_note) as f:
                 for line in f:
                     if copy_text:
@@ -121,7 +121,7 @@ def copy_prev(day: date):
                     if '__Blockers__:' in line:
                         copy_text = False
             # If the note that wants to be edited already exists
-            # It will add "lines_to_be_append" to "What I did yesterdays" section of notes
+            # It will add "lines_to_append" to "What I did yesterdays" section of notes
             if os.path.exists(note):
                 with open(note) as f:
                     data = f.readlines()
@@ -132,7 +132,7 @@ def copy_prev(day: date):
                 editor.edit(note, contents=date_of_note + beginning_format + "".join(lines_to_append) + end_format)
         if not result:
             response = input("Yesterdays notes will not be copied. Press enter to continue")
-    # If previous days notes does nto exist
+    # If previous days notes doesn't exist
     else:
         response = input("Yesterdays notes were not found, nothing will be copied. Press enter to continue: ")
     edit_note(day)
@@ -180,8 +180,8 @@ def iterate_weekday(day: date, func: Callable[[date], date]) -> date:
 
 def delete_notes(date_to_delete):
     """
-    Allows the user to delete notes. User inputes a date and will ask the user if they want to delete notes older
-    then the date provided
+    Allows the user to delete notes. User inputs a date and will ask the user if they want to delete notes older
+    than the date provided
     """
     files_to_delete = []
     validate(date_to_delete)
