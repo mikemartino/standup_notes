@@ -3,9 +3,11 @@ import sys
 from datetime import datetime, date, timedelta
 from typing import Callable
 
+from mattermostdriver import Driver
 import argparse
 import editor
 import pyperclip
+import getpass
 from pkg_resources import resource_stream
 
 EXT = '.standup-notes.txt'
@@ -27,6 +29,7 @@ def main():
     parser.add_argument('-c', '--copy', help='Copy stand-up notes', action='store_true')
     parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
     parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
+    parser.add_argument('-p', '--post', help='Post notes to mattermost server', action='store_true')
     arguments = parser.parse_args()
 
     # sys.argv includes a list of elements starting with the program name
@@ -52,6 +55,9 @@ def main():
 
     if arguments.copy:
         call_func_for_specified_day(copy_note, arguments)
+
+    if arguments.post:
+        matter_post(date.today())
 
 
 def call_func_for_specified_day(func, arguments):
@@ -149,8 +155,73 @@ def delete_notes(date_to_delete):
         print("No files to be deleted")
 
 
-def matter_post():
+def matter_post(day: date):
+    username = "mnwdonovan"
+    password = "3VKGiJaBnuL9u2N*"
+    foo = Driver({
+        """
+        Required options
 
+        Instead of the login/password, you can also use a personal access token.
+        If you have a token, you don't need to pass login/pass.
+        It is also possible to use 'auth' to pass a auth header in directly,
+        for an example, see:
+        https://vaelor.github.io/python-mattermost-driver/#authentication
+        """
+        'url': 'mattermost.parentfamily.ca/bffs',
+        'login_id': username,
+        'password': password,
+
+        """
+        Optional options
+
+        These options already have useful defaults or are just not needed in every case.
+        In most cases, you won't need to modify these, especially the basepath.
+        If you can only use a self signed/insecure certificate, you should set
+        verify to False. Please double check this if you have any errors while
+        using a self signed certificate!
+        """
+        'scheme': 'https',
+        'port': 8065,
+        'basepath': '/api/v4',
+        'verify': False,
+        """
+        Setting this will pass the your auth header directly to
+        the request libraries 'auth' parameter.
+        You probably only want that, if token or login/password is not set or
+        you want to set a custom auth header.
+        """
+        
+        'auth': None,
+        """
+        If for some reasons you get regular timeouts after a while, try to decrease
+        this value. The websocket will ping the server in this interval to keep the connection
+        alive.
+        If you have access to your server configuration, you can of course increase the timeout
+        there.
+        """
+        'timeout': 30,
+
+        """
+        This value controls the request timeout.
+        See https://python-requests.org/en/master/user/advanced/#timeouts
+        for more information.
+        The default value is None here, because it is the default in the
+        request library, too.
+        """
+        'request_timeout': None,
+
+        """
+        Setting debug to True, will activate a very verbose logging.
+        This also activates the logging for the requests package,
+        so you can see every request you send.
+
+        Be careful. This SHOULD NOT be active in production, because this logs a lot!
+        Even the password for your account when doing driver.login()!
+        """
+        'debug': False
+    })
+    foo.login()
     return 0
 
 
