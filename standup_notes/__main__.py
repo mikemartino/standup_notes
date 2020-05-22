@@ -15,7 +15,6 @@ STANDUP_TEMPLATE_STRING = str(STANDUP_TEMPLATE.read().decode('UTF-8'))
 
 
 def main():
-    print(STANDUP_TEMPLATE_STRING)
     parser = argparse.ArgumentParser()
     days = parser.add_mutually_exclusive_group()
 
@@ -94,6 +93,10 @@ def copy_note(day: date):
 
 
 def copy_prev(day: date):
+    """
+    This function will allow the option of copying the previous days "What I'm doing today" into the
+    "What I did yesterdays" section of  that days notes
+    """
     previous_days_note = get_note_name(last_weekday(day))
     note = get_note_name(day)
     date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
@@ -101,11 +104,13 @@ def copy_prev(day: date):
     end_format = '\n'.join(STANDUP_TEMPLATE_STRING.splitlines()[2:])
     copy_text = False
     lines_to_append = []
-
+    # If the previous days notes exists
     if os.path.exists(previous_days_note):
         result = verify_input("Found yesterdays notes, would you like to insert applicable information into your "
                               "notes y/n: ")
+        # If the user wants to copy previous days notes
         if result:
+            # Copy's applicable information from
             with open(previous_days_note) as f:
                 for line in f:
                     if copy_text:
@@ -115,19 +120,19 @@ def copy_prev(day: date):
                         copy_text = True
                     if '__Blockers__:' in line:
                         copy_text = False
+            # If the note that wants to be edited already exists
+            # It will add "lines_to_be_append" to "What I did yesterdays" section of notes
             if os.path.exists(note):
                 with open(note) as f:
                     data = f.readlines()
                 data[1] = data[1] + "".join(lines_to_append)
                 with open(note, 'w') as file:
                     file.writelines(data)
-
             else:
-                editor.edit(note, contents=date_of_note + beginning_format + " ".join(lines_to_append) + end_format)
-                # with open(note, "w+") as f:
-                #   f.write(date_of_note + beginning_format + " ".join(lines_to_append) + end_format)
+                editor.edit(note, contents=date_of_note + beginning_format + "".join(lines_to_append) + end_format)
         if not result:
             response = input("Yesterdays notes will not be copied. Press enter to continue")
+    # If previous days notes does nto exist
     else:
         response = input("Yesterdays notes were not found, nothing will be copied. Press enter to continue: ")
     edit_note(day)
@@ -174,6 +179,10 @@ def iterate_weekday(day: date, func: Callable[[date], date]) -> date:
 
 
 def delete_notes(date_to_delete):
+    """
+    Allows the user to delete notes. User inputes a date and will ask the user if they want to delete notes older
+    then the date provided
+    """
     files_to_delete = []
     validate(date_to_delete)
     date_in_int = int(date_to_delete.replace('-', ''))
@@ -196,6 +205,9 @@ def delete_notes(date_to_delete):
 
 
 def validate(date_text):
+    """
+    Validate if date input is correct
+    """
     try:
         datetime.strptime(date_text, '%Y-%m-%d')
     except ValueError:
@@ -203,6 +215,10 @@ def validate(date_text):
 
 
 def verify_input(log):
+    """
+    Loop to verify yes or no input.
+    Function takes a string which is printed out so the user knows what they are agreeing to
+    """
     while True:
         result = input(log)
         if result.lower() == 'y':
