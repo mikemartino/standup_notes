@@ -58,6 +58,13 @@ standup-notes -e
 standup-notes --edit
 ```
 will edit the note selected based on date flagged passed
+Passing the copy argument will allow you to copy the previous days "What I did Today" into "What I did yesterdays" section of that days note
+```
+standup-notes -e --today -c 
+standup-notes -edit --today --copy
+```
+
+
 #####Delete Notes
 ```
 standup-notes -d
