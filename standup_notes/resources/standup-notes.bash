@@ -2,7 +2,7 @@
 
 _standup_completions()
 {
-    local cur prev opts
+    local cur prev opts prev prev2
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
