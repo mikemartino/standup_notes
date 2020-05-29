@@ -55,7 +55,7 @@ def main():
         else:
             call_func_for_specified_day(edit_note, arguments)
 
-    elif arguments.copy:
+    if arguments.copy:
         call_func_for_specified_day(copy_note, arguments)
 
 
