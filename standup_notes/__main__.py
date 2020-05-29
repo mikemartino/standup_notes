@@ -39,23 +39,23 @@ def main():
     if not os.path.exists(STANDUP_NOTES):
         os.mkdir(STANDUP_NOTES)
 
-    if arguments.list:
+    elif arguments.list:
         for note in reversed(sorted(os.listdir(STANDUP_NOTES))):
             print(os.path.join(STANDUP_NOTES, note))
 
-    if arguments.delete:
+    elif arguments.delete:
         call_func_for_specified_day(delete_notes, arguments)
 
-    if arguments.read:
+    elif arguments.read:
         call_func_for_specified_day(read_note, arguments)
 
-    if arguments.edit:
+    elif arguments.edit:
         if arguments.copy:
             call_func_for_specified_day(copy_prev, arguments)
         else:
             call_func_for_specified_day(edit_note, arguments)
 
-    if arguments.copy:
+    elif arguments.copy:
         call_func_for_specified_day(copy_note, arguments)
 
 
@@ -64,13 +64,13 @@ def call_func_for_specified_day(func, arguments):
     if arguments.yesterday:
         func(last_weekday(date.today()))
         return 0
-    if arguments.today:
+    elif arguments.today:
         func(date.today())
         return 0
-    if arguments.tomorrow:
+    elif arguments.tomorrow:
         func(next_weekday(date.today()))
         return 0
-    if arguments.delete:
+    elif arguments.delete:
         func(arguments.delete)
         return 0
     else:
