@@ -28,7 +28,6 @@ def main():
                                              'Otherwise, copies the specified day\'s notes ', action='store_true')
     parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
     parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
-    parser.add_argument('-p', '--post', help="Post specified days chats to mattermost", action='store_true')
     arguments = parser.parse_args()
 
     # sys.argv includes a list of elements starting with the program name
