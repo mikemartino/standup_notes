@@ -22,7 +22,7 @@ To have bash completion, find where the bash_completion.d file is in your system
 ```
 pip3 show standup-notes
 ```
-Under the ```Location: ``` tab, this is where ```bash_completion.d``` is located.
+Under the ```Location: ``` tab, this is where ```standup-notes.bash``` is located.
 Run the following command to copy the bash completion script to the correct directory
 ```
 cp /path/to/standup-notes.bash /path/to/bash_completion.d
