@@ -20,7 +20,7 @@ setup(
           ]
       },
     package_data={
-        "standup_notes": ["resources/*.template"],
+        "standup_notes": ["resources/*.template", "resources/*.bash"],
     },
     classifiers=[
         "Programming Language :: Python :: 3",

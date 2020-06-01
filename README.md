@@ -21,11 +21,15 @@ For a 1 time execution, use
 ```
 source /path/to/standup-notes.bash
 ```
-To permanently have bash completion, copy the standup-notes.bash into the bash-completion.d folder in your system
+To permanently have bash completion, find where the bash_completion.d file is in your system
+```
+pip3 show standup-notes
+```
+Under the Location: tab, this is where ```bash_completion.d``` is located
+Run the following command to copy the bash completion script to the correct directory
 ```
 cp /path/to/standup-notes.bash /path/to/bash_completion.d
 ```
-
 ## Commands
 ##### Day Flags
 ```
@@ -65,7 +69,7 @@ standup-notes -edit --today --copy
 ```
 
 
-#####Delete Notes
+####Delete Notes
 ```
 standup-notes -d
 standup-notes --delete
