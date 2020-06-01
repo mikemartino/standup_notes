@@ -18,14 +18,14 @@ pip3 install standup-notes
 ```
 ### Bash Setup
 
-To have bash completion, find where the bash_completion.d file is in your system by running the following command
+To have bash completion, find where the ```standup-notes.bash``` file is in your system by running the following command
 ```
 pip3 show standup-notes
 ```
-Under the ```Location: ``` tab, this is where ```standup-notes.bash``` is located.
+Under the ```Location: ``` tab, this is where the resoruces folder is located which contains ```standup-notes.bash```.
 Run the following command to copy the bash completion script to the correct directory
 ```
-cp /path/to/standup-notes.bash /path/to/bash_completion.d
+cp /path/to/resources/standup-notes.bash /path/to/bash_completion.d/
 ```
 ## Commands
 ##### Day Flags
