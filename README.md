@@ -47,13 +47,13 @@ standup-notes --r
 standup-notes --read
  ``` 
 will print out the stand up note based on the date flag passed
-####Copy
+#### Copy
 ```
 standup-notes -c
 standup-notes --copy
 ```
 will copy the standup-notes to the date selected to your clipboard
-####Edit
+#### Edit
 ```
 standup-notes -e
 standup-notes --edit
@@ -66,7 +66,7 @@ standup-notes -edit --today --copy
 ```
 
 
-####Delete Notes
+#### Delete Notes
 ```
 standup-notes -d
 standup-notes --delete
