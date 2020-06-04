@@ -113,11 +113,11 @@ def copy_prev(day: date):
             with open(previous_days_note) as f:
                 for line in f:
                     if copy_text:
-                        if '__Blockers__:' not in line:
+                        if 'Blockers' not in line:
                             lines_to_append.append(line)
-                    if '__What I\'m doing' in line:
+                    if 'What I\'m doing' in line:
                         copy_text = True
-                    if '__Blockers__:' in line:
+                    if 'Blockers' in line:
                         copy_text = False
             # If the note that wants to be edited already exists
             # It will add "lines_to_append" to "What I did yesterdays" section of notes
