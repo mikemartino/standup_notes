@@ -134,7 +134,7 @@ def copy_prev(day: date):
     # If previous days notes doesn't exist
     else:
         response = input("Yesterdays notes were not found, nothing will be copied. Press enter to continue: ")
-    edit_note(day)
+        edit_note(day)
 
 
 def edit_note(day: date):
