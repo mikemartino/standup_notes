@@ -25,7 +25,7 @@ pip3 show standup-notes
 Under the ```Location: ``` tab, this is where the resoruces folder is located which contains ```standup-notes.bash```.
 Run the following command to copy the bash completion script to the correct directory
 ```
-cp /path/to/resources/standup-notes.bash /path/to/bash_completion.d/
+cp /path/to/resources/standup-notes.bash /etc/bash_completion.d/
 ```
 ## Commands
 ##### Day Flags
