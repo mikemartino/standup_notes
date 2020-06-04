@@ -17,15 +17,16 @@ python3 setup.py install --user
 pip3 install standup-notes
 ```
 ### Bash Setup
-For a 1 time execution, use
-```
-source /path/to/standup-notes.bash
-```
-To permanently have bash completion, copy the standup-notes.bash into the bash-completion.d folder in your system
-```
-cp /path/to/standup-notes.bash /path/to/bash_completion.d
-```
 
+To have bash completion, find where the ```standup-notes.bash``` file is in your system by running the following command
+```
+pip3 show standup-notes
+```
+Under the ```Location: ``` tab, this is where the resoruces folder is located which contains ```standup-notes.bash```.
+Run the following command to copy the bash completion script to the correct directory
+```
+cp /path/to/resources/standup-notes.bash /etc/bash_completion.d/
+```
 ## Commands
 ##### Day Flags
 ```
@@ -46,13 +47,13 @@ standup-notes --r
 standup-notes --read
  ``` 
 will print out the stand up note based on the date flag passed
-####Copy
+#### Copy
 ```
 standup-notes -c
 standup-notes --copy
 ```
 will copy the standup-notes to the date selected to your clipboard
-####Edit
+#### Edit
 ```
 standup-notes -e
 standup-notes --edit
@@ -65,7 +66,7 @@ standup-notes -edit --today --copy
 ```
 
 
-#####Delete Notes
+#### Delete Notes
 ```
 standup-notes -d
 standup-notes --delete
