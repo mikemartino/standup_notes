@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="standup-notes", 
-    version="2.0.0",
+    version="2.1.0",
     author="Mike Martino",
     author_email="mikemartino86@gmail.com",
     description="This is small tool for managing daily standup notes and getting them ready to be copy/pasted into another platform (i.e. virtual standup in Mattermost)",
