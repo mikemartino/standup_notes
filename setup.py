@@ -13,7 +13,7 @@ setup(
     long_description_content_type="text/markdown",
     url="http://www.mikemartino.ca",
     packages=find_packages(),
-    install_requires=['python-editor==1.0.4', 'pyperclip==1.8.0'],
+    install_requires=['python-editor==1.0.4', 'pyperclip==1.8.0', 'pymsteams==0.1.13'],
     entry_points={
           'console_scripts': [
               'standup-notes = standup_notes.__main__:main'
