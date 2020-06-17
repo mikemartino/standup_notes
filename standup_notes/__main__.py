@@ -212,9 +212,9 @@ def post_note(day: date):
     print("Posting your note")
     date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
     link = input("Please put in the connector link: ")
-    name = input("PLease enter your name: ")
+    name = input("Please enter your name: ")
     myTeamsMessage = pymsteams.connectorcard(link)
-    myTeamsMessage.text(name+"'s standup notes for " + date_of_note)
+    myTeamsMessage.text(name+ "'s standup notes for " + date_of_note)
     # Create Section 1
     Section1 = pymsteams.cardsection()
     Section1.activityTitle("What I did yesterday")
