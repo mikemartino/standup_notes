@@ -115,15 +115,6 @@ def copy_prev(day: date):
         # If the user wants to copy previous days notes
         if result:
             # Copy's applicable information from previous days notes
-            with open(previous_days_note) as f:
-                for line in f:
-                    if copy_text:
-                        if 'Blockers' not in line:
-                            lines_to_append.append(line)
-                    if 'What I\'m doing' in line:
-                        copy_text = True
-                    if 'Blockers' in line:
-                        copy_text = False
             lines_to_append = get_text(previous_days_note, 't')
             # If the note that wants to be edited already exists
             # It will add "lines_to_append" to "What I did yesterdays" section of notes
@@ -135,6 +126,7 @@ def copy_prev(day: date):
                     file.writelines(data)
             else:
                 editor.edit(note, contents=date_of_note + beginning_format + "".join(lines_to_append) + end_format)
+                return 0
         if not result:
             response = input("Yesterdays notes will not be copied. Press enter to continue")
     # If previous days notes doesn't exist
@@ -260,36 +252,6 @@ def verify_input(log):
             return False
         else:
             print("Please enter a valid response")
-
-
-def get_text_of_previous_day(text):
-    lines_to_append = []
-    copy_text = False
-    with open(text) as f:
-        for line in f:
-            if copy_text:
-                if 'What I\'m doing' not in line:
-                    lines_to_append.append(line)
-            if 'What I did' in line:
-                copy_text = True
-            if 'What I\'m doing' in line:
-                copy_text = False
-    return "".join(lines_to_append)
-
-
-def get_text_for_today(text):
-    lines_to_append = []
-    copy_text = False
-    with open(text) as f:
-        for line in f:
-            if copy_text:
-                if 'Blockers' not in line:
-                    lines_to_append.append(line)
-            if 'What I\'m doing' in line:
-                copy_text = True
-            if 'Blockers' in line:
-                copy_text = False
-    return "".join(lines_to_append)
 
 
 def get_text(text, day):
