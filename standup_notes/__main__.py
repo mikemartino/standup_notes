@@ -26,11 +26,13 @@ def main():
 
     parser.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
     parser.add_argument('-r', '--read', help='Read stand-up notes', action='store_true')
-    parser.add_argument('-c', '--copy', help='If combined with the \'edit\' flag, copies the previous days TODO. '
-                                             'Otherwise, copies the specified day\'s notes ', action='store_true')
+    parser.add_argument('-c', '--copy', help='Copies the specified day\'s notes', action='store_true')
     parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
+
+    parser.add_argument('-x', '--editcopy', help='Copy\'s previous days notes and puts them into today\'s notes', action='store_true')
     parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
     parser.add_argument('-p', '--post', help='Function to post notes to msteams chat', action='store_true')
+
     arguments = parser.parse_args()
     # sys.argv includes a list of elements starting with the program name
     if len(sys.argv) < 2:
@@ -51,13 +53,13 @@ def main():
         call_func_for_specified_day(read_note, arguments)
 
     if arguments.edit:
-        if arguments.copy:
-            call_func_for_specified_day(copy_prev, arguments)
-        else:
-            call_func_for_specified_day(edit_note, arguments)
+        call_func_for_specified_day(edit_note, arguments)
 
     if arguments.copy:
         call_func_for_specified_day(copy_note, arguments)
+
+    if arguments.editcopy:
+        call_func_for_specified_day(copy_prev, arguments)
 
     if arguments.post:
         post_note(date.today())

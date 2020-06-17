@@ -12,13 +12,10 @@ _standup_completions()
     days="--today --tomorrow --yesterday"
 
     case "${prev}" in
-      -l | --list | -d | --delete | --today | --tomorrow | --yesterday)
-        if [ "$prev2" = "-e" ] || [ "$prev2" = "--edit" ]; then
-          COMPREPLY=( $(compgen -W "-c --copy" -- ${cur}))
-        fi
+      -l | --list | -d | --delete | -p | --post | --today | --tomorrow | --yesterday)
         return 0
         ;;
-      -c | --copy | -e | --edit | -r | --read)
+      -c | --copy | -e | --edit | -r | --read | -x | --editcopy)
         if [ "$prev2" = "--yesterday" ] || [ "$prev2" = "--today" ] ||[ "$prev2" = "--tomorrow" ] ; then
           return 0
         fi
@@ -29,7 +26,5 @@ _standup_completions()
       ;;
     esac
     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}))
-
-
 }
 complete -F _standup_completions standup-notes
