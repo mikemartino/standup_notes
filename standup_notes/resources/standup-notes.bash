@@ -8,7 +8,7 @@ _standup_completions()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     prev2="${COMP_WORDS[COMP_CWORD-2]}"
 
-    opts="-l --list -r --read -c --copy -e --edit -d --delete"
+    opts="-l --list -r --read -c --copy -e --edit -d --delete -p --post -x --editcopy"
     days="--today --tomorrow --yesterday"
 
     case "${prev}" in

@@ -27,12 +27,12 @@ def main():
 
     args.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
     args.add_argument('-r', '--read', help='Read stand-up notes', action='store_true')
-    args.add_argument('-c', '--copy', help='Copies the specified day\'s notes', action='store_true')
+    args.add_argument('-c', '--copy', help='Copies the specified day\'s notes to clipboard', action='store_true')
     args.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
 
     args.add_argument('-x', '--editcopy', help='Copy\'s previous days notes and puts them into today\'s notes', action='store_true')
     args.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
-    args.add_argument('-p', '--post', help='Function to post notes to msteams chat', action='store_true')
+    args.add_argument('-p', '--post', help='Post notes to MS Teams chat', action='store_true')
 
     arguments = parser.parse_args()
     # sys.argv includes a list of elements starting with the program name

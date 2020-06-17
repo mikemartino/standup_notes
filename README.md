@@ -85,7 +85,7 @@ standup-notes --post
 ```
 This will post standup-notes to an ms teams chat
 
-To create an incoming webhook follow he step below
+To create an incoming webhook follow the step below
 
 1. Navigate to the channel where you want to add the webhook and select (•••) More Options from the top navigation bar.
 2. Choose Connectors from the drop-down menu and search for Incoming Webhook.
