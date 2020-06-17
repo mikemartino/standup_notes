@@ -19,19 +19,20 @@ STANDUP_TEMPLATE_STRING = str(STANDUP_TEMPLATE.read().decode('UTF-8'))
 def main():
     parser = argparse.ArgumentParser()
     days = parser.add_mutually_exclusive_group()
+    args = parser.add_mutually_exclusive_group()
 
     days.add_argument("--today", help="Flag passed in to do action with today's notes", action="store_true")
     days.add_argument("--tomorrow", help="Flag passed in to do action with tomorrow's notes", action="store_true")
     days.add_argument("--yesterday", help="Flag passed in to do action with tomorrow's notes", action="store_true")
 
-    parser.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
-    parser.add_argument('-r', '--read', help='Read stand-up notes', action='store_true')
-    parser.add_argument('-c', '--copy', help='Copies the specified day\'s notes', action='store_true')
-    parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
+    args.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
+    args.add_argument('-r', '--read', help='Read stand-up notes', action='store_true')
+    args.add_argument('-c', '--copy', help='Copies the specified day\'s notes', action='store_true')
+    args.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
 
-    parser.add_argument('-x', '--editcopy', help='Copy\'s previous days notes and puts them into today\'s notes', action='store_true')
-    parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
-    parser.add_argument('-p', '--post', help='Function to post notes to msteams chat', action='store_true')
+    args.add_argument('-x', '--editcopy', help='Copy\'s previous days notes and puts them into today\'s notes', action='store_true')
+    args.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
+    args.add_argument('-p', '--post', help='Function to post notes to msteams chat', action='store_true')
 
     arguments = parser.parse_args()
     # sys.argv includes a list of elements starting with the program name
