@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import sys
 from datetime import datetime, date, timedelta
@@ -6,6 +7,7 @@ from typing import Callable
 import argparse
 import editor
 import pyperclip
+import pymsteams
 from pkg_resources import resource_stream
 
 EXT = '.standup-notes.txt'
@@ -17,19 +19,22 @@ STANDUP_TEMPLATE_STRING = str(STANDUP_TEMPLATE.read().decode('UTF-8'))
 def main():
     parser = argparse.ArgumentParser()
     days = parser.add_mutually_exclusive_group()
+    args = parser.add_mutually_exclusive_group()
 
     days.add_argument("--today", help="Flag passed in to do action with today's notes", action="store_true")
     days.add_argument("--tomorrow", help="Flag passed in to do action with tomorrow's notes", action="store_true")
     days.add_argument("--yesterday", help="Flag passed in to do action with tomorrow's notes", action="store_true")
 
-    parser.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
-    parser.add_argument('-r', '--read', help='Read stand-up notes', action='store_true')
-    parser.add_argument('-c', '--copy', help='If combined with the \'edit\' flag, copies the previous days TODO. '
-                                             'Otherwise, copies the specified day\'s notes ', action='store_true')
-    parser.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
-    parser.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
-    arguments = parser.parse_args()
+    args.add_argument('-l', '--list', help='List all stand-up notes.', action='store_true')
+    args.add_argument('-r', '--read', help='Read stand-up notes', action='store_true')
+    args.add_argument('-c', '--copy', help='Copies the specified day\'s notes to clipboard', action='store_true')
+    args.add_argument('-e', '--edit', help='Edit stand-up notes', action='store_true')
 
+    args.add_argument('-x', '--editcopy', help='Copy\'s previous days notes and puts them into today\'s notes', action='store_true')
+    args.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
+    args.add_argument('-p', '--post', help='Post notes to MS Teams chat', action='store_true')
+
+    arguments = parser.parse_args()
     # sys.argv includes a list of elements starting with the program name
     if len(sys.argv) < 2:
         parser.print_usage()
@@ -49,13 +54,16 @@ def main():
         call_func_for_specified_day(read_note, arguments)
 
     if arguments.edit:
-        if arguments.copy:
-            call_func_for_specified_day(copy_prev, arguments)
-        else:
-            call_func_for_specified_day(edit_note, arguments)
+        call_func_for_specified_day(edit_note, arguments)
 
     if arguments.copy:
         call_func_for_specified_day(copy_note, arguments)
+
+    if arguments.editcopy:
+        call_func_for_specified_day(copy_prev, arguments)
+
+    if arguments.post:
+        post_note(date.today())
 
 
 def call_func_for_specified_day(func, arguments):
@@ -110,15 +118,7 @@ def copy_prev(day: date):
         # If the user wants to copy previous days notes
         if result:
             # Copy's applicable information from previous days notes
-            with open(previous_days_note) as f:
-                for line in f:
-                    if copy_text:
-                        if 'Blockers' not in line:
-                            lines_to_append.append(line)
-                    if 'What I\'m doing' in line:
-                        copy_text = True
-                    if 'Blockers' in line:
-                        copy_text = False
+            lines_to_append = get_text(previous_days_note, 't')
             # If the note that wants to be edited already exists
             # It will add "lines_to_append" to "What I did yesterdays" section of notes
             if os.path.exists(note):
@@ -129,19 +129,19 @@ def copy_prev(day: date):
                     file.writelines(data)
             else:
                 editor.edit(note, contents=date_of_note + beginning_format + "".join(lines_to_append) + end_format)
+                return 0
         if not result:
             response = input("Yesterdays notes will not be copied. Press enter to continue")
     # If previous days notes doesn't exist
     else:
         response = input("Yesterdays notes were not found, nothing will be copied. Press enter to continue: ")
-        edit_note(day)
+    edit_note(day)
 
 
 def edit_note(day: date):
     """Launches the default $EDITOR or a suitable default. If the note already exists, the editor opens it for editing.
     If the note does not exist, the editor opens a new file using the stand-up template."""
     note = get_note_name(day)
-
     date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
     if os.path.exists(note):
         editor.edit(note)
@@ -203,6 +203,35 @@ def delete_notes(date_to_delete):
         print("No files to be deleted")
 
 
+def post_note(day: date):
+    print("Posting your note")
+    date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
+    link = input("Please put in the connector link: ")
+    name = input("Please enter your name: ")
+    myTeamsMessage = pymsteams.connectorcard(link)
+    myTeamsMessage.text(name+ "'s standup notes for " + date_of_note)
+    # Create Section 1
+    Section1 = pymsteams.cardsection()
+    Section1.activityTitle("What I did yesterday")
+    Section1.activityText(get_text(get_note_name(day), 'y'))
+
+    # Create Section 2
+    Section2 = pymsteams.cardsection()
+    Section2.activityTitle("What I am doing today")
+    Section2.activityText(get_text(get_note_name(day), 't'))
+
+    # Create Section 3
+    Section3 = pymsteams.cardsection()
+    Section3.activityTitle("Blockers")
+    Section3.activityText(get_blockers(get_note_name(day)))
+    # Add both Sections to the main card object
+    myTeamsMessage.addSection(Section1)
+    myTeamsMessage.addSection(Section2)
+    myTeamsMessage.addSection(Section3)
+    myTeamsMessage.send()
+    print("Message sent")
+
+
 def validate(date_text):
     """
     Validate if date input is correct
@@ -226,6 +255,38 @@ def verify_input(log):
             return False
         else:
             print("Please enter a valid response")
+
+
+def get_text(text, day):
+    lines_to_append = []
+    text_to_use = []
+    if day == 't':
+        text_to_use = ['Blockers', 'What I\'m doing']
+    if day == 'y':
+        text_to_use = ['What I\'m doing', 'What I did']
+    copy_text = False
+    with open(text) as f:
+        for line in f:
+            if copy_text:
+                if text_to_use[0] not in line:
+                    lines_to_append.append(line)
+            if text_to_use[1] in line:
+                copy_text = True
+            if text_to_use[0] in line:
+                copy_text = False
+    return "".join(lines_to_append)
+
+
+def get_blockers(text):
+    lines_to_append = []
+    copy_text = False
+    with open(text) as f:
+        for line in f:
+            if copy_text:
+                lines_to_append.append(line)
+            if 'Blockers' in line:
+                copy_text = True
+    return "".join(lines_to_append)
 
 
 if __name__ == '__main__':
