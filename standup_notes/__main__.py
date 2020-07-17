@@ -48,7 +48,7 @@ def main():
             print(os.path.join(STANDUP_NOTES, note))
 
     if arguments.delete:
-        call_func_for_specified_day(delete_notes, arguments)
+        delete_notes(arguments.delete)
 
     if arguments.read:
         call_func_for_specified_day(read_note, arguments)
@@ -76,9 +76,6 @@ def call_func_for_specified_day(func, arguments):
         return 0
     if arguments.tomorrow:
         func(next_weekday(date.today()))
-        return 0
-    if arguments.delete:
-        func(arguments.delete)
         return 0
     else:
         print("Make sure to include the proper argument. Type standup-notes -h for more info")
