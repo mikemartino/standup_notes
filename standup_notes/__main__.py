@@ -32,7 +32,7 @@ def main():
 
     args.add_argument('-x', '--editcopy', help='Copy\'s previous days notes and puts them into today\'s notes', action='store_true')
     args.add_argument('-d', '--delete', help='Delete stand-up notes from inputted date', action='store', type=str)
-    args.add_argument('-p', '--post', help='Post notes to MS Teams chat', action='store_true')
+    args.add_argument('-p', '--post', help='Post the specified day\'s notes to MS Teams chat', action='store_true')
 
     arguments = parser.parse_args()
     # sys.argv includes a list of elements starting with the program name
@@ -63,7 +63,7 @@ def main():
         call_func_for_specified_day(copy_prev, arguments)
 
     if arguments.post:
-        post_note(date.today())
+        call_func_for_specified_day(post_note, arguments)
 
 
 def call_func_for_specified_day(func, arguments):
