@@ -83,7 +83,11 @@ This will delete any notes older then May 5th 2020
 standup-notes -p
 standup-notes --post
 ```
-This will post standup-notes to an ms teams chat
+This will post the standup-notes based on date flagged passed
+```
+standup-notes -p --today
+standup-notes --post --tomorrow
+```
 
 To create an incoming webhook follow the step below
 
