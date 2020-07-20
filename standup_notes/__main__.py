@@ -194,8 +194,9 @@ def delete_notes(date_to_delete):
     date_in_int = int(date_to_delete.replace('-', ''))
     for file in os.listdir(STANDUP_NOTES):
         value = int(file.split('.')[0])
-        if value < date_in_int:
+        if (value < date_in_int) and file.endswith('.txt'):
             files_to_delete.append(file)
+
     if files_to_delete:
         print("Here are the file to be deleted")
         print(*files_to_delete, sep='\n')
@@ -203,7 +204,7 @@ def delete_notes(date_to_delete):
         if result:
             for file in files_to_delete:
                 os.remove(os.path.join(STANDUP_NOTES, file))
-                print("Files have been deleted.")
+                print('Files have been deleted.')
         else:
             print("No files to be deleted")
     else:
