@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 import os
 import sys
 from datetime import datetime, date, timedelta
@@ -10,11 +11,20 @@ import pyperclip
 import pymsteams
 from pkg_resources import resource_stream
 
+
+CONFIG_FILE = resource_stream('standup_notes.resources', 'config.json')
 EXT = '.standup-notes.txt'
 STANDUP_NOTES = os.path.join(os.environ.get("HOME"), 'Desktop/standup-notes')
 STANDUP_TEMPLATE = resource_stream('standup_notes.resources', 'standup.template')
 STANDUP_TEMPLATE_STRING = str(STANDUP_TEMPLATE.read().decode('UTF-8'))
 
+
+def load_config():
+    '''
+    Loads config from the config file
+    '''
+    config = str(CONFIG_FILE.read().decode('UTF-8'))
+    return json.loads(config)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -204,10 +214,22 @@ def delete_notes(date_to_delete):
 
 
 def post_note(day: date):
-    print("Posting your note")
+    print("Checking your config")
+    config = load_config()
+    if config["msTeams"]["connectorURL"]:
+        link = config["msTeams"]["connectorURL"]
+        print(f"Using connectorURL from config: {link}")
+    else:
+        link = input("Please put in the connector link: ")
+
+    if config["msTeams"]["name"]:
+        name = config["msTeams"]["name"]
+        print(f"Using name from config: {name}")
+    else:
+        name = input("Please enter your name: ")
+
     date_of_note = "Date: " + day.strftime("%m/%d/%Y") + " \n"
-    link = input("Please put in the connector link: ")
-    name = input("Please enter your name: ")
+    print("Posting your note")
     myTeamsMessage = pymsteams.connectorcard(link)
     myTeamsMessage.text(name+ "'s standup notes for " + date_of_note)
     # Create Section 1

@@ -28,14 +28,14 @@ Run the following command to copy the bash completion script to the correct dire
 cp /path/to/resources/standup-notes.bash /etc/bash_completion.d/
 ```
 ## Commands
-##### Day Flags
+#### Day Flags
 ```
 --yesterday
 --today
 --tomorrow
 ```
 Pass the flags to the read, copy and edit execution to manipulate their respectives standup-notes
-##### List
+#### List
  ```
 standup-notes --l
 standup-notes --list
@@ -89,7 +89,13 @@ standup-notes -p --today
 standup-notes --post --tomorrow
 ```
 
-To create an incoming webhook follow the step below
+##### I hate typing my name and the URL every time
+To save your name and the URL of the MS Teams Webhook:
+1. `vim $(pip3 show standup_notes | grep 'Location' | cut -c11-)/standup_notes/resources/config.json`
+2. Add your name and the connectorURL or the channel you want to post your notes to.
+
+
+##### Create an incoming webhook
 
 1. Navigate to the channel where you want to add the webhook and select (•••) More Options from the top navigation bar.
 2. Choose Connectors from the drop-down menu and search for Incoming Webhook.
